@@ -1,0 +1,73 @@
+---
+title: "Lung Cancer Report"
+author: "Chris Annunziato"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r, set-chunk-opts, echo = FALSE}
+library(knitr)
+opts_chunk$set(
+  echo = FALSE, warning = FALSE, message = FALSE
+)
+```
+
+
+
+```{r, load-data}
+here::i_am("Lung_cancer_report.Rmd")
+data <- readRDS(
+  here::here("Edited_data/Data_clean.rds"))
+
+library(labelled)
+library(gtsummary)
+```
+
+This data set comes from Mysar Ahmad Bhat from kaggle (https://www.kaggle.com/datasets/mysarahmadbhat/lung-cancer?resource=download) containing lung cancer data. It has `r nrow(data)` observations pertaining to lung cancer patients with attributes gender, age, smoking status, yellow fingers, anxiety, peer pressure, chronic Disease, fatigue, allergy, wheezing, alcohol consumption, coughing, shortness of Breath, swallowing Difficulty, and chest pain. The analysis objective is to predict lung cancer using gender, age, smoking status, and coughing.
+
+```{r, table1}
+library(gtsummary)
+
+Table_one <- readRDS(
+  here::here("tables/Table_one.rds"))
+Table_one
+```
+Table one shown above gives information about the gender of the patients, their smoking status, age, and if they reported coughing.
+
+```{r, bar chart}
+library(ggplot2)
+
+data$GENDER <- factor(data$GENDER, levels = c("M", "F"), labels = c("Male", "Female"))
+
+
+data$SMOKING_char <- factor(data$SMOKING, levels = c(0, 1), labels = c("Non-Smoking", "Smoking"))
+
+
+data$GENDER_SMOKING <- interaction(data$GENDER, data$SMOKING_char, sep = "_")
+
+
+ggplot(data, aes(x = GENDER_SMOKING, fill = LUNG_CANCER)) +
+  geom_bar(position = "stack") +  
+  labs(title = "Lung Cancer by Gender and Smoking Status",
+       x = "Gender & Smoking Status",
+       y = "Count",
+       fill = "Lung Cancer") +
+  theme_minimal()
+```
+
+The bar chart above shows number of patients grouped by their gender and smoking status. It also shows how many of those patients have lung cancer. There were more smokers in both genders, however male smokers were the higher number of observations of the two. THe majority of patients in teh dataset have lung cancer.
+
+```{r, model}
+
+data$SMOKING <- factor(data$SMOKING, levels = c(0,1), labels = c("No", "Yes"))
+data$COUGHING <- factor(data$COUGHING, levels = c(0,1), labels = c("No", "Yes"))
+data$LUNG_CANCER <- factor(data$LUNG_CANCER, levels = c("NO", "YES"))
+
+model <- glm(LUNG_CANCER ~ GENDER + AGE + SMOKING + COUGHING, 
+             data = data, 
+             family = binomial)
+
+regression_table <- tbl_regression(model)|>add_global_p()
+regression_table
+```
+
+The model above is predicting lung cancer using gender, age, smoking status, and coughing. Gender and age were both not significant predictors of lung cancer. Smoking status was borderline significant with a p-val of 0.082. Smoking increased the odds of lung cancer by e^0.63= 1.88 times holding the other values constant. This means that smokers are 88% higher odd of having lung cancer than non smokers. Coughing was significant with a p-val of <0.001. Coughing increased the odds of lung cancer by e^1.6=4.95 times holding other values constant. This means that people who report coughing are 395% higher odds of having lung cancer than those who dont. 
