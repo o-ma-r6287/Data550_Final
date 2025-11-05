@@ -3,3 +3,5 @@ tables/*
 *.html
 .DS_Store
 .Rproj.user
+charts/*
+models/*

@@ -34,39 +34,19 @@ Table_one
 Table one shown above gives information about the gender of the patients, their smoking status, age, and if they reported coughing.
 
 ```{r, bar chart}
-library(ggplot2)
-
-data$GENDER <- factor(data$GENDER, levels = c("M", "F"), labels = c("Male", "Female"))
-
-
-data$SMOKING_char <- factor(data$SMOKING, levels = c(0, 1), labels = c("Non-Smoking", "Smoking"))
-
-
-data$GENDER_SMOKING <- interaction(data$GENDER, data$SMOKING_char, sep = "_")
-
-
-ggplot(data, aes(x = GENDER_SMOKING, fill = LUNG_CANCER)) +
-  geom_bar(position = "stack") +  
-  labs(title = "Lung Cancer by Gender and Smoking Status",
-       x = "Gender & Smoking Status",
-       y = "Count",
-       fill = "Lung Cancer") +
-  theme_minimal()
+#| fig.align = "center",
+#| out.width = "600px"
+knitr::include_graphics(
+  here::here("charts/barchart1.png")
+)
 ```
 
-The bar chart above shows number of patients grouped by their gender and smoking status. It also shows how many of those patients have lung cancer. There were more smokers in both genders, however male smokers were the higher number of observations of the two. THe majority of patients in teh dataset have lung cancer.
+The bar chart above shows number of patients grouped by their gender and smoking status. It also shows how many of those patients have lung cancer. There were more smokers in both genders, however male smokers were the higher number of observations of the two. The majority of patients in the dataset have lung cancer.
 
 ```{r, model}
 
-data$SMOKING <- factor(data$SMOKING, levels = c(0,1), labels = c("No", "Yes"))
-data$COUGHING <- factor(data$COUGHING, levels = c(0,1), labels = c("No", "Yes"))
-data$LUNG_CANCER <- factor(data$LUNG_CANCER, levels = c("NO", "YES"))
-
-model <- glm(LUNG_CANCER ~ GENDER + AGE + SMOKING + COUGHING, 
-             data = data, 
-             family = binomial)
-
-regression_table <- tbl_regression(model)|>add_global_p()
+regression_table <- readRDS(
+  here::here("models/Model_one.rds"))
 regression_table
 ```
 
