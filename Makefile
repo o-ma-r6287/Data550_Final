@@ -12,6 +12,8 @@ models/Model_one.rds:Edited_data/Data_clean.rds code/Model1.R
 	
 charts/barchart1.png:Edited_data/Data_clean.rds code/Bar_chart.R
 	Rscript code/Bar_chart.R
+install:
+	Rscript -e "options(renv.consent = TRUE); renv::restore(prompt = FALSE)"
 
 .PHONY: clean
 clean:

@@ -1,6 +1,9 @@
 # Data 550 Final Project
 To generate final report type make in the terminal after ensuring your working directory is the Data550_Final folder.
 
+## Synchronize packages
+To synchronize packages make sure you are in the Data550_Final folder and type make install.
+
 ## Output
 The report called Lung_cancer_report is an HTML file which analysis lung cancer data from kaggle. 
 It contains a table one, bar chart of smoking status by gender, and logistic regression model predicting lung cancer.
