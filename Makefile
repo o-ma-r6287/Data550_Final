@@ -18,3 +18,13 @@ install:
 .PHONY: clean
 clean:
 	rm -f tables/*.rds	&& rm -f Lung_cancer_report.html && rm -f models/* && rm -f charts/*
+
+.PHONY: report
+
+report:
+	mkdir -p report
+	docker run --rm \
+		-v "$(PWD)/report:/report" \
+		omarimage:latest
+docker-run:
+	docker run --rm -v "$(PWD)/report:/project/output" 0m412/omarimage:report
